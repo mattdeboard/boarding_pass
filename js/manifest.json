@@ -1,0 +1,29 @@
+{
+    "manifest_version": 2,
+    "version": "0.0.3",
+    "name": "NewsBlur - Boarding Pass",
+    "description": "Mark stories on NewsBlur!",
+    "background": {
+        "page": "background.html",
+        "persistent": false
+    },
+    "permissions": [
+        "tabs",
+        "notifications",
+        "http://newsblur.com/*",
+        "https://newsblur.com/*",
+        "http://www.newsblur.com/*",
+        "https://www.newsblur.com/*"
+    ],
+    "content_scripts": [
+        {
+            "matches":  [
+                "http://newsblur.com/*",
+                "https://newsblur.com/*",
+                "http://www.newsblur.com/*",
+                "https://www.newsblur.com/*"
+            ],
+            "js": [ "main.js" ]
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "boarding_pass",
+  "dependencies": {
+      "underscore": "~1.5.1",
+      "jquery": "~1.9.1",
+      "require-cs": "git@github.com:courseload/require-cs.git#~0.5",
+      "requirejs": "~2.1.5",
+      "requirejs-i18n": "~2.0.2",
+      "requirejs-text": "~2.0.6"
+  }
+}
