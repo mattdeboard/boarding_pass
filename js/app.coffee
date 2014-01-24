@@ -25,58 +25,17 @@ insertButtons = ->
 
 port = chrome.runtime.connect({ name: 'nb-overlay' })
 
-article_store = {}
-article_store.indexedDB = {}
-article_store.indexedDB.db = null
-article_store.indexedDB.open = ->
-    version = 1
-    request = indexedDB.open "articles", version
-
-    request.onupgradeneeded = (e) ->
-        db = e.target.result
-        e.target.transaction.onerror = article_store.indexedDB.onerror
-
-        if db.objectStoreNames.contains "articles"
-            db.deleteObjectStore "articles"
-
-        store = db.createObjectStore "articles", {keyPath: "url"}
-
-    request.onsuccess = (e) ->
-        article_store.indexedDB.db = e.target.result
-        article_store.indexedDB.getAllArticles()
-
-    request.onerror = article_store.indexedDB.onerror
-    null
-
-article_store.indexedDB.open()
-
-article_store.indexedDB.addArticle = (data) ->
-    db = article_store.indexedDB.db
-    trans = db.transaction ["articles"], "readwrite"
-    store = trans.objectStore "articles"
-    request = store.put data
-
-    request.onsuccess = (e) ->
-        article_store.indexedDB.getAllArticles()
-
-article_store.indexedDB.getAllArticles = ->
-    db = article_store.indexedDB.db
-    trans = db.transaction ["articles"], "readwrite"
-    store = trans.objectStore "articles"
-
-    keyRange = IDBKeyRange.lowerBound 0
-    cursorRequest = store.openCursor keyRange
-
-    cursorRequest.onsuccess = (e) ->
-        result = e.target.result
-        if !!result == false
-            return
-
-        console.log result.value
-        result.continue()
-
-    cursorRequest.onerror = article_store.indexedDB.onerror
-    return
+articleDB = {}
+db.open(
+    server: "articles"
+    version: 1
+    schema:
+        articles:
+            key: { keyPath: 'id' }
+            indexes:
+                url: { unique: true })
+    .done (s) ->
+        articleDB = s
 
 $('div.NB-story-titles').on 'DOMSubtreeModified', (e) ->
     _.defer insertButtons
@@ -92,26 +51,20 @@ $('div.NB-story-titles').on 'click', 'span.cp-buttons button', (e) ->
         headline: parent.data('headline')
         url: parent.data('href').split("?")[0]
 
-    db = article_store.indexedDB.db
-    trans = db.transaction ["articles"], "readwrite"
-    store = trans.objectStore "articles"
-    request = store.get article.url
+    query = articleDB.articles.query().only('url', article.url).execute()
 
-    request.onerror = (e) ->
-        console.log e
-
-    request.onsuccess = (e) ->
+    $.when(query).done (res) ->
         # If this url already exists locally, compare the categories; if they're
         # different, send a PUT request. If they're the same, don't send a
         # request since there's no data change.
         reqUrl = 'http://api.celebrityplanecrash.com/v1/article/'
         reqType = 'POST'
-        res = request.result
-        if res?
+        debugger
+        if res.length
             if res.category == article.category
                 return
             reqType = 'PUT'
-            reqUrl += "#{request.result.id}/"
+            reqUrl += "#{res.id}/"
 
         req = $.ajax
             url: reqUrl
@@ -124,4 +77,4 @@ $('div.NB-story-titles').on 'click', 'span.cp-buttons button', (e) ->
             data: JSON.stringify(article)
 
         $.when(req).done (data) ->
-            article_store.indexedDB.addArticle data
+            articleDB.add data
