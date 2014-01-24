@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
-    "version": "0.0.3",
-    "name": "NewsBlur - Boarding Pass",
+    "version": "0.0.4",
+    "name": "Boarding Pass",
     "description": "Mark stories on NewsBlur!",
     "background": {
         "page": "background.html",
@@ -10,10 +10,12 @@
     "permissions": [
         "tabs",
         "notifications",
+        "storage",
         "http://newsblur.com/*",
         "https://newsblur.com/*",
         "http://www.newsblur.com/*",
-        "https://www.newsblur.com/*"
+        "https://www.newsblur.com/*",
+        "http://api.celebrityplanecrash.com/*"
     ],
     "content_scripts": [
         {
