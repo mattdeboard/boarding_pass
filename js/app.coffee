@@ -107,9 +107,11 @@ $('div.NB-story-titles').on 'click', 'span.cp-buttons button', (e) ->
         reqUrl = 'http://api.celebrityplanecrash.com/v1/article/'
         reqType = 'POST'
 
-        if request.result?
-            reqType = 'PUT'
-            reqUrl += "#{request.result.id}/"
+        unless request.result?
+            return
+
+        reqType = 'PUT'
+        reqUrl += "#{request.result.id}/"
 
         unless request.result.category == article.category
             req = $.ajax
