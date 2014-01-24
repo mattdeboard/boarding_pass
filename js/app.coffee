@@ -106,23 +106,22 @@ $('div.NB-story-titles').on 'click', 'span.cp-buttons button', (e) ->
         # request since there's no data change.
         reqUrl = 'http://api.celebrityplanecrash.com/v1/article/'
         reqType = 'POST'
+        res = request.result
+        if res?
+            if res.category == article.category
+                return
+            reqType = 'PUT'
+            reqUrl += "#{request.result.id}/"
 
-        unless request.result?
-            return
+        req = $.ajax
+            url: reqUrl
+            type: reqType
+            timeout: 4000
+            headers:
+                Accept: 'application/json'
+            contentType: 'application/json'
+            dataType: 'json'
+            data: JSON.stringify(article)
 
-        reqType = 'PUT'
-        reqUrl += "#{request.result.id}/"
-
-        unless request.result.category == article.category
-            req = $.ajax
-                url: reqUrl
-                type: reqType
-                timeout: 4000
-                headers:
-                    Accept: 'application/json'
-                contentType: 'application/json'
-                dataType: 'json'
-                data: JSON.stringify(article)
-
-            $.when(req).done (data) ->
-                article_store.indexedDB.addArticle data
+        $.when(req).done (data) ->
+            article_store.indexedDB.addArticle data
