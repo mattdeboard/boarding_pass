@@ -35,6 +35,7 @@ module.exports = (grunt) ->
         concat:
             dist:
                 src: [
+                    'build/db.min.js',
                     'bower_components/underscore/underscore.js',
                     'bower_components/jquery/jquery.js',
                     'build/app.js'
@@ -52,6 +53,9 @@ module.exports = (grunt) ->
             my_target:
                 files:
                     'build/deps.js': [ 'bower_components/**/*.js' ]
+            dbjs:
+                files:
+                    'build/db.min.js': [ 'js/db.js' ]
         requirejs:
             compile:
                 options:
@@ -69,7 +73,7 @@ module.exports = (grunt) ->
     grunt.loadNpmTasks 'grunt-contrib-requirejs'
     grunt.registerTask 'default', [
         'coffee',
-        # 'uglify',
+        'uglify:dbjs',
         'concat',
         'copy',
         'compress:chrome',
