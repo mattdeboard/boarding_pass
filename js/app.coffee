@@ -10,11 +10,14 @@ insertButtons = ->
         <button id=\"cockpit\">
             Cockpit
         </button>
-        <button id=\"business\">
-            Business
+        <button id=\"first\">
+            First Class
         </button>
-        <button id=\"economy\">
-            Economy
+        <button id=\"business\">
+            Business Class
+        </button>
+        <button id=\"coach\">
+            Coach
         </button>
     </span>"
 
