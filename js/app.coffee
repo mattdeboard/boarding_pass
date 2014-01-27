@@ -91,7 +91,8 @@ $('div.NB-story-titles').on 'click', 'span.cp-buttons button', (e) ->
     target = $(e.target)
     parent = target.parent('span.cp-buttons')
     article =
-        category: target.attr 'id'
+        category:
+            short_name: target.attr 'id'
         headline: parent.data('headline')
         url: parent.data('href').split("?")[0]
 
